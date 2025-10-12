@@ -76,6 +76,9 @@ dependencies {
     implementation (libs.androidx.compose.material3.material33)
     implementation (libs.androidx.compose.material.material.icons.extended)
 
+    implementation(libs.font.awesome)
+
+
 
 
 

@@ -1,8 +1,7 @@
 package com.mwinensoaa.schoolsiren.screens
 
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -11,8 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 
@@ -21,7 +18,7 @@ import androidx.compose.ui.unit.dp
 fun SirenAppNavigation() {
     val navController = rememberNavController()
     val items = listOf(
-        BottomNavItem("Dev", Icons.Default.Person, "developer"),
+        BottomNavItem("About", Icons.Default.Person, "developer"),
         BottomNavItem("New Alarm", Icons.Default.AddAlarm, "new_alarm"),
         BottomNavItem("Alarms", Icons.Default.List, "alarm_list")
     )
@@ -67,7 +64,7 @@ fun SirenAppNavigation() {
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            composable("developer") { AboutScreen() }
+            composable("developer") { AboutScreen(onBack = {}) }
             composable("new_alarm") { ScheduleAlarmScreen(onSaved = {
 
             }) }
