@@ -1,1 +1,1 @@
-# SchoolSiren
+A simple, minimal interface, easy-to-use alarm for scheduling regular school activities such as break, lunchs time, closing time. it has default alarm ringtones for the user and the ability to upload custom tones during scheduling
