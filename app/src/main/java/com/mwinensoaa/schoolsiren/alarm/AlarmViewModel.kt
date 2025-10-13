@@ -1,12 +1,17 @@
 package com.mwinensoaa.schoolsiren.alarm
 
 import android.app.Application
+import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.mwinensoaa.schoolsiren.data.AlarmDatabase
 import com.mwinensoaa.schoolsiren.data.AlarmEntity
 import com.mwinensoaa.schoolsiren.data.AlarmRepository
-import com.mwinensoaa.schoolsiren.alarm.AlarmScheduler
+import com.mwinensoaa.schoolsiren.data.AlarmType
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -14,6 +19,16 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class AlarmViewModel(application: Application) : AndroidViewModel(application) {
+
+    var hour by  mutableIntStateOf(0)
+    var minute by  mutableIntStateOf(0)
+    var label by  mutableStateOf("")
+
+    var loops by  mutableStateOf("0")
+    var type by  mutableStateOf(AlarmType.MORNING)
+    var audioUri by  mutableStateOf<Uri?>(null)
+
+    var showSuccessDialog by  mutableStateOf(false)
     private val db = AlarmDatabase.getInstance(application)
     private val dao = db.alarmDao()
     private val alarmRepository = AlarmRepository(dao)
@@ -40,7 +55,14 @@ class AlarmViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 
+    fun resetFields(){
+        loops = "0"
+        label = ""
+        audioUri = null
+        hour = 0
+        minute =0
 
+    }
 
 
 
