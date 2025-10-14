@@ -1,29 +1,33 @@
 package com.mwinensoaa.schoolsiren.alarm
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
+import androidx.core.content.ContextCompat
 import com.mwinensoaa.schoolsiren.data.AlarmDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
+///receives scheduled alarms and send them to the service for playing
 class AlarmReceiver : BroadcastReceiver() {
-     val TAG = "Broadcaster_received"
+
     override fun onReceive(context: Context, intent: Intent) {
         val alarmId = intent.getIntExtra("alarmId", -1)
-        Log.d(TAG, "Broadcater received...${alarmId}")
+
 
         if (alarmId == -1) return
         val serviceIntent = Intent(context, AlarmService::class.java).apply {
             putExtra("alarmId", alarmId)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            context.startForegroundService(serviceIntent)
+        @SuppressLint("ObsoleteSdkInt")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ContextCompat.startForegroundService(context, serviceIntent)
         } else {
             context.startService(serviceIntent)
         }
@@ -35,8 +39,6 @@ class AlarmReceiver : BroadcastReceiver() {
             }
         }
     }
-
-
 
 
 }

@@ -3,18 +3,17 @@ package com.mwinensoaa.schoolsiren.alarm
 
 
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.mwinensoaa.schoolsiren.data.AlarmDatabase
 import com.mwinensoaa.schoolsiren.data.AlarmEntity
@@ -29,8 +28,9 @@ import com.mwinensoaa.schoolsiren.R
 
 
 class AlarmService : Service() {
-    private var player: MediaPlayer? = null
+
     private var mediaPlayer:  MediaPlayer? = null
+
 
     override fun onCreate() {
         super.onCreate()
@@ -38,19 +38,17 @@ class AlarmService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val alarmId = intent?.getIntExtra("alarmId", -1) ?: -1
-        if (alarmId == -1) return START_NOT_STICKY
         val notification = createNotification()
         startForeground(1, notification)
+        val alarmId = intent?.getIntExtra("alarmId", -1) ?: -1
+        if (alarmId == -1) return START_NOT_STICKY
 
         CoroutineScope(Dispatchers.IO).launch {
             val db = AlarmDatabase.getInstance(applicationContext)
             val alarm = db.alarmDao().getById(alarmId)
             alarm?.let {
-
                 withContext(Dispatchers.Main) {
                     playAlarm(it)
-
                 }
             }
         }
@@ -58,23 +56,21 @@ class AlarmService : Service() {
     }
 
 
+    ///plays the alarm audio
     private fun playAlarm(alarm: AlarmEntity) {
         try {
-            // Release any previous player
             mediaPlayer?.release()
 
             val uri: Uri = if (alarm.audioUri != null) {
-                // Custom audio selected by the user
-                alarm.audioUri!!.toUri()
+                alarm.audioUri.toUri()
             } else {
-                // Default app sound from res/raw
                 val resId = alarm.type.defaultResId
                 "android.resource://${applicationContext.packageName}/$resId".toUri()
             }
 
             mediaPlayer = MediaPlayer().apply {
                 setDataSource(applicationContext, uri)
-                mediaPlayer?.setAudioAttributes(
+                setAudioAttributes(
                     AudioAttributes.Builder()
                         .setUsage(AudioAttributes.USAGE_ALARM)
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -82,12 +78,10 @@ class AlarmService : Service() {
                 )
                 isLooping = false
 
-                // Prepare asynchronously to avoid blocking
                 setOnPreparedListener { mp ->
                     mp.start()
                 }
 
-                // Handle looping
                 var playCount = 1
                 val loopLimit = if (alarm.loopCount <= 0) 1 else alarm.loopCount
                 setOnCompletionListener { mp ->
@@ -100,93 +94,19 @@ class AlarmService : Service() {
                         mp.start()
                     }
                 }
-
                 prepareAsync()
             }
 
         } catch (e: SecurityException) {
-            e.printStackTrace()
-            Log.e("AlarmService", "Missing storage permission for custom audio: ${e.message}")
-            // TODO: gracefully handle missing permission, e.g. play default sound
+
         } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e("AlarmService", "Error playing alarm: ${e.message}")
+
         }
     }
 
 
-//    private fun playAlarm(alarm: AlarmEntity) {
-//        val uriStr = alarm.audioUri ?: run {
-//            val resId = alarm.type.defaultResId
-//            "android.resource://${packageName}/$resId"
-//        }
-//
-//        val uri = uriStr.toUri()
-//
-//        ///PASTED THIS NEW INSTANCE OF MEDIA PLAYER TO CHECK WHICH ONE WORKS BETTER
-//
-//        try {
-//            mediaPlayer?.setDataSource(applicationContext, uri)
-//            mediaPlayer?.setAudioStreamType(AudioManager.STREAM_ALARM)
-//            mediaPlayer?.prepare()
-//            mediaPlayer?.start()
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            // fallback to default
-//        }
-//
-//        mediaPlayer?.release()
-//        mediaPlayer = MediaPlayer.create(applicationContext, uri).apply {
-//            isLooping = false
-//            setOnCompletionListener {
-//                // decide based on loopCount
-//            }
-//            start()
-//        }
-//
-//        // Handle loop by restarting on completion up to loopCount
-//        var played1 = 1
-//        val loops2 = if (alarm.loopCount <= 0) 1 else alarm.loopCount
-//        mediaPlayer?.setOnCompletionListener {
-//            if (played1 >= loops2) {
-//                stopSelf()
-//            } else {
-//
-//                played1++
-//                it.start()
-//            }
-//        }
-//
-//        ///END OF DIFFERENT INSTANCE OF MEDIA MEDIA. REVERSE TO OLD IF IT DOES NOT WORK TOO
-//
-//
-////        player?.release()
-////        player = MediaPlayer.create(applicationContext, uri).apply {
-////            isLooping = false
-////            setOnCompletionListener {
-////                // decide based on loopCount
-////            }
-////            start()
-////        }
-////
-////        // Handle loop by restarting on completion up to loopCount
-////        var played = 1
-////        val loops = if (alarm.loopCount <= 0) 1 else alarm.loopCount
-////        player?.setOnCompletionListener {
-////            if (played >= loops) {
-////                stopSelf()
-////            } else {
-////
-////                played++
-////                it.start()
-////            }
-////        }
-//    }
-
 
     override fun onDestroy() {
-        player?.release()
-        player = null
         mediaPlayer?.release()
         mediaPlayer = null
         super.onDestroy()
@@ -211,7 +131,8 @@ class AlarmService : Service() {
         val channelId = "alarm_channel"
 
         // Create channel for Android O and above
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        @SuppressLint("ObsoleteSdkInt")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
                 "Alarm Notifications",

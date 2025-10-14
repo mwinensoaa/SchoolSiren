@@ -2,8 +2,11 @@ package com.mwinensoaa.schoolsiren.alarm
 
 import android.app.Application
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
@@ -33,13 +36,18 @@ class AlarmViewModel(application: Application) : AndroidViewModel(application) {
     private val dao = db.alarmDao()
     private val alarmRepository = AlarmRepository(dao)
 
+
+
+
+
+
+
     val alarms: StateFlow<List<AlarmEntity>> = alarmRepository.getAllFlow()
         .map { it }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun insert(alarm: AlarmEntity) = viewModelScope.launch {
         val id = alarmRepository.insert(alarm).toInt()
-        // reschedule with correct id - fetch saved entity
         val saved = alarmRepository.getById(id)
        saved?.let { AlarmScheduler.schedule(getApplication(), it) }
     }
@@ -50,7 +58,6 @@ class AlarmViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun delete(alarm: AlarmEntity) = viewModelScope.launch {
-       // AlarmScheduler.cancel(getApplication(), alarm)
         alarmRepository.delete(alarm)
     }
 

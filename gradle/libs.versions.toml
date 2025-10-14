@@ -1,5 +1,6 @@
 [versions]
-agp = "8.11.2"
+accompanistPermissions = "0.37.3"
+agp = "8.13.0"
 fontAwesome = "1.1.1"
 kotlin = "2.0.21"
 coreKtx = "1.17.0"
@@ -16,8 +17,10 @@ roomCompiler = "2.5.0"
 roomRuntime = "2.8.1"
 ui = "1.9.2"
 workRuntimeKtx = "2.10.5"
+androidbrowserhelper = "2.6.2"
 
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-compose-material-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-material3-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 androidx-compose-material3-material32 = { module = "androidx.compose.material3:material3" }
@@ -48,6 +51,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 material3 = { module = "androidx.compose.material3:material3" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+androidbrowserhelper = { group = "com.google.androidbrowserhelper", name = "androidbrowserhelper", version.ref = "androidbrowserhelper" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
