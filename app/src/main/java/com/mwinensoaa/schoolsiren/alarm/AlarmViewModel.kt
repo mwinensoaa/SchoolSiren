@@ -2,8 +2,6 @@ package com.mwinensoaa.schoolsiren.alarm
 
 import android.app.Application
 import android.net.Uri
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -28,7 +26,7 @@ class AlarmViewModel(application: Application) : AndroidViewModel(application) {
     var label by  mutableStateOf("")
 
     var loops by  mutableStateOf("0")
-    var type by  mutableStateOf(AlarmType.MORNING)
+    var type by  mutableStateOf(AlarmType.START_LESSONS)
     var audioUri by  mutableStateOf<Uri?>(null)
 
     var showSuccessDialog by  mutableStateOf(false)
@@ -68,8 +66,12 @@ class AlarmViewModel(application: Application) : AndroidViewModel(application) {
         audioUri = null
         hour = 0
         minute =0
+        type = AlarmType.START_LESSONS
 
     }
+
+
+
 
 
 

@@ -29,7 +29,6 @@ import com.mwinensoaa.schoolsiren.ui.theme.SchoolSirenTheme
 
 class MainActivity : ComponentActivity() {
 
-    @RequiresApi(Build.VERSION_CODES.S)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

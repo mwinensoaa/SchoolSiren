@@ -4,7 +4,7 @@ package com.mwinensoaa.schoolsiren.data
 import com.mwinensoaa.schoolsiren.R
 
 enum class AlarmType(val label: String, val defaultResId: Int) {
-    MORNING("Start Lessons", R.raw.audio_morning),
+    START_LESSONS("Start Lessons", R.raw.audio_lessons_began),
     BREAK("Break Time", R.raw.audio_break_time),
     CHANGE_LESSON("Change Lesson", R.raw.audio_change_lesson),
     CLOSING("Closing Time", R.raw.audio_closing),

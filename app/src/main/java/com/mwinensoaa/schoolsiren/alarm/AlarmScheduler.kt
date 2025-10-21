@@ -24,36 +24,33 @@ object AlarmScheduler {
         val calendar = getAlarmTimeCalendar(alarm.hour, alarm.minute)
         val triggerTimeMillis = calendar.timeInMillis
 
-         val alarmRequestCode = (alarm.hour * 100) + alarm.minute
-
-        val operationIntent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra("alarmId", alarm.id)
-        }
-
-        val operationPendingIntent = PendingIntent.getBroadcast(
-            context,
-            alarmRequestCode,
-            operationIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-
-        val showIntent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-
-        val showPendingIntent = PendingIntent.getActivity(
-            context,
-            alarmRequestCode,
-            showIntent,
-            getPendingIntentFlags(isMutable = false)
-        )
-
-        val alarmClockInfo = AlarmManager.AlarmClockInfo(
-            triggerTimeMillis,
-            showPendingIntent
-        )
-        alarmManager.setAlarmClock(alarmClockInfo, operationPendingIntent)
-
+               val alarmRequestCode = (alarm.hour * 100) + alarm.minute
+               val operationIntent = Intent(context, AlarmReceiver::class.java).apply {
+                   putExtra("alarmId", alarm.id)
+               }
+               val operationPendingIntent = PendingIntent.getBroadcast(
+                   context,
+                   alarmRequestCode,
+                   operationIntent,
+                   PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+               )
+               val showIntent = Intent(context, MainActivity::class.java).apply {
+                   flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+               }
+               val showPendingIntent = PendingIntent.getActivity(
+                   context,
+                   alarmRequestCode,
+                   showIntent,
+                   getPendingIntentFlags(isMutable = false)
+               )
+               val alarmClockInfo = AlarmManager.AlarmClockInfo(
+                   triggerTimeMillis,
+                   showPendingIntent
+               )
+               alarmManager.setAlarmClock(alarmClockInfo, operationPendingIntent)
+              Log.d("AlarmScheduler", "Alarm scheduled for ${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)} on ${calendar.get(
+                  Calendar.DAY_OF_MONTH
+              )}/${calendar.get(Calendar.MONTH) + 1}/${calendar.get(Calendar.YEAR)}")
     }
 
 
@@ -80,11 +77,12 @@ object AlarmScheduler {
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
+
+            if (before(now)) {
+                add(Calendar.DAY_OF_YEAR, 1)
+            }
         }
 
-        if (alarmTime.before(now)) {
-            alarmTime.add(Calendar.DAY_OF_YEAR, 1)
-        }
         return alarmTime
     }
 

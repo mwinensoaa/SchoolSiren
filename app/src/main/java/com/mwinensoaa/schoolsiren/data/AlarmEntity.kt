@@ -13,5 +13,5 @@ data class AlarmEntity(
     val loopCount: Int,
     val audioUri: String?,
     val type: AlarmType,
-    val enabled: Boolean = true
+    val enabled: Boolean = true,
 )

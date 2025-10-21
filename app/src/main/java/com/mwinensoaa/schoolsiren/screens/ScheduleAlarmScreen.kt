@@ -24,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material.icons.filled.Label
@@ -31,6 +32,7 @@ import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Nightlight
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -276,7 +278,7 @@ fun DropdownMenuType(
                         ) {
                             Icon(
                                 imageVector = when (type) {
-                                    AlarmType.MORNING -> Icons.Default.WbSunny
+                                    AlarmType.START_LESSONS -> Icons.Default.WbSunny
                                     AlarmType.BREAK -> Icons.Default.Coffee
                                     AlarmType.CHANGE_LESSON -> Icons.Default.Notifications
                                     AlarmType.CLOSING -> Icons.Default.Nightlight
@@ -339,6 +341,11 @@ fun SuccessDialog(
         tonalElevation = 8.dp
     )
 }
+
+
+
+
+
 
 
 

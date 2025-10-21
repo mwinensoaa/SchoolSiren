@@ -1,11 +1,11 @@
 package com.mwinensoaa.schoolsiren.alarm
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.core.content.ContextCompat
 import com.mwinensoaa.schoolsiren.data.AlarmDatabase
 import kotlinx.coroutines.CoroutineScope
@@ -24,21 +24,22 @@ class AlarmReceiver : BroadcastReceiver() {
         val serviceIntent = Intent(context, AlarmService::class.java).apply {
             putExtra("alarmId", alarmId)
         }
-
-        @SuppressLint("ObsoleteSdkInt")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ContextCompat.startForegroundService(context, serviceIntent)
-        } else {
-            context.startService(serviceIntent)
-        }
-
         CoroutineScope(Dispatchers.IO).launch {
+            @SuppressLint("ObsoleteSdkInt")
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                ContextCompat.startForegroundService(context, serviceIntent)
+            } else {
+                context.startService(serviceIntent)
+            }
             val dao = AlarmDatabase.getInstance(context).alarmDao()
             dao.getById(alarmId)?.let {
                AlarmScheduler.schedule(context, it)
             }
         }
+
     }
+
+
 
 
 }
